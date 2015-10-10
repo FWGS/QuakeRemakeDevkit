@@ -19,7 +19,6 @@
   Monster-related utility code
 
 */
-#include "port.h"
 
 #include "extdll.h"
 #include "util.h"

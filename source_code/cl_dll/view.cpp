@@ -12,7 +12,7 @@
 #include "cvardef.h"
 #include "usercmd.h"
 #include "const.h"
-#include <windows.h>
+//#include <windows.h>
 #include "entity_state.h"
 #include "cl_entity.h"
 #include "ref_params.h"
@@ -261,10 +261,7 @@ void V_DriftPitch ( struct ref_params_s *pparams )
 	{
 		if ( fabs( pparams->cmd->forwardmove ) < cl_forwardspeed->value )
 			pd.driftmove = 0;
-		else
-			pd.driftmove += pparams->frametime;
-	
-		if ( pd.driftmove > v_centermove->value)
+		else if ( pd.driftmove > v_centermove->value)
 		{
 			V_StartPitchDrift ();
 		}

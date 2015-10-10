@@ -23,7 +23,11 @@
 #include "r_studioint.h"
 #include "com_model.h"
 
+#ifdef _WIN32
 #define DLLEXPORT __declspec( dllexport )
+#else
+#define DLLEXPORT __attribute__ ((visibility("default")))
+#endif
 
 void VectorAngles( const float *forward, float *angles );
 

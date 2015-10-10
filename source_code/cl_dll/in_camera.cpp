@@ -15,7 +15,6 @@
 #include "camera.h"
 #include "in_defs.h"
 #include "cl_entity.h"
-#include "windows.h"
 
 float CL_KeyState (kbutton_t *key);
 
@@ -129,6 +128,12 @@ float MoveToward( float cur, float goal, float maxspeed )
 	return cur;
 }
 
+void GetCursorPos( POINT *p )
+{
+    gEngfuncs.GetMousePosition( (int *)&p->x, (int *)&p->y );
+}
+
+void SetCursorPos( int x, int y ) {}
 
 //-------------------------------------------------- Gobal Functions
 

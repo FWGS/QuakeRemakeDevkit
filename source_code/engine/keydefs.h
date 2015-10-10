@@ -24,6 +24,9 @@
 #define K_ESCAPE		27
 #define K_SPACE		32
 
+// android keys
+#define ANDROID_K_BACK 1073742094
+
 // normal keys should be passed as lowercased ascii
 
 #define K_BACKSPACE		127
@@ -125,8 +128,8 @@
 // mouse buttons generate virtual keys
 //
 #define K_MOUSE1		241
-#define K_MOUSE2		242
-#define K_MOUSE3		243
+#define K_MOUSE2		243
+#define K_MOUSE3		242
 #define K_MOUSE4		244
 #define K_MOUSE5		245
 

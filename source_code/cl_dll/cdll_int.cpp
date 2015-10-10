@@ -29,10 +29,15 @@ extern "C"
 }
 
 #include <string.h>
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
+#ifdef _WIN32
 #define DLLEXPORT __declspec( dllexport )
-
+#else
+#define DLLEXPORT __attribute__ ((visibility("default")))
+#endif
 
 cl_enginefunc_t gEngfuncs;
 CHud gHUD;
@@ -77,7 +82,7 @@ HUD_GetRect
 
 Vgui stub
 ================================
-*/
+*//*
 int *HUD_GetRect( void )
 {
 	RECT wrect;
@@ -101,7 +106,7 @@ int *HUD_GetRect( void )
 		}
 	}
 	return extent;	
-}
+}*/
 
 /*
 ================================
@@ -293,7 +298,7 @@ Called by engine every frame that client .dll is loaded
 
 void DLLEXPORT HUD_Frame( double time )
 {
-	gEngfuncs.VGui_ViewportPaintBackground( HUD_GetRect( ));
+	//gEngfuncs.VGui_ViewportPaintBackground( HUD_GetRect( ));
 }
 
 /*
