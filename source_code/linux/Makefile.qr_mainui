@@ -1,0 +1,63 @@
+#
+# launcher Makefile for x86 Linux
+#
+#
+
+MAINUI_SRC_DIR=$(SOURCE_DIR)/mainui
+
+MAINUI_OBJ_DIR=$(BUILD_OBJ_DIR)/qr_mainui
+
+CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS) 
+LDFLAGS=-lm -shared
+		 
+INCLUDEDIRS=-I$(MAINUI_SRC_DIR) -I../engine -I../common -I../pm_shared
+
+DO_CC=$(CPLUS) $(INCLUDEDIRS) $(CFLAGS) -o $@ -c $<
+DO_PUBLIC_CC=$(CPLUS) $(COMMON_INCLUDEDIRS) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_COMMON_CC=$(CPLUS) $(INCLUDEDIRS)  $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_PM_SHARED_CC=$(CC) $(INCLUDEDIRS)  $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+
+#####################################################################
+
+MAINUI_OBJS = \
+        ${MAINUI_OBJ_DIR}/basemenu.o \
+        ${MAINUI_OBJ_DIR}/menu_advcontrols.o \
+        ${MAINUI_OBJ_DIR}/menu_audio.o \
+        ${MAINUI_OBJ_DIR}/menu_btns.o \
+        ${MAINUI_OBJ_DIR}/menu_configuration.o \
+        ${MAINUI_OBJ_DIR}/menu_controls.o \
+        ${MAINUI_OBJ_DIR}/menu_creategame.o \
+        ${MAINUI_OBJ_DIR}/menu_credits.o \
+        ${MAINUI_OBJ_DIR}/menu_customgame.o \
+        ${MAINUI_OBJ_DIR}/menu_gameoptions.o \
+        ${MAINUI_OBJ_DIR}/menu_internetgames.o \
+        ${MAINUI_OBJ_DIR}/menu_langame.o \
+        ${MAINUI_OBJ_DIR}/menu_loadgame.o \
+        ${MAINUI_OBJ_DIR}/menu_main.o \
+        ${MAINUI_OBJ_DIR}/menu_multiplayer.o \
+        ${MAINUI_OBJ_DIR}/menu_playersetup.o \
+        ${MAINUI_OBJ_DIR}/menu_savegame.o \
+        ${MAINUI_OBJ_DIR}/menu_saveload.o \
+        ${MAINUI_OBJ_DIR}/menu_strings.o \
+        ${MAINUI_OBJ_DIR}/menu_video.o \
+        ${MAINUI_OBJ_DIR}/menu_vidmodes.o \
+        ${MAINUI_OBJ_DIR}/menu_vidoptions.o \
+        ${MAINUI_OBJ_DIR}/udll_int.o \
+        ${MAINUI_OBJ_DIR}/ui_title_anim.o \
+        ${MAINUI_OBJ_DIR}/utils.o \
+
+all: libxashmenu.$(SHLIBEXT)
+
+libxashmenu.$(SHLIBEXT): $(MAINUI_OBJS) 
+	$(CLINK) -o $(BUILD_DIR)/$@ $(MAINUI_OBJS) $(LDFLAGS) $(CPP_LIB)
+	./gendbg.sh $(BUILD_DIR)/$@
+
+$(MAINUI_OBJ_DIR):
+	mkdir -p $(MAINUI_OBJ_DIR)
+
+$(MAINUI_OBJ_DIR)/%.o: $(MAINUI_SRC_DIR)/%.cpp $(filter-out $(wildcard  $(MAINUI_OBJ_DIR)),  $(MAINUI_OBJ_DIR))
+	$(DO_CC)
+
+clean:
+	-rm -rf $(MAINUI_OBJ_DIR)
+	-rm -f libxashmenu.$(SHLIBEXT)

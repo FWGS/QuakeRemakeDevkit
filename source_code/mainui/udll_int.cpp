@@ -21,12 +21,6 @@ ui_enginefuncs_t	g_engfuncs;
 ui_globalvars_t	*gpGlobals;
 CMenu gMenu;
 
-// main DLL entry point
-BOOL WINAPI DllMain( HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved )
-{
-	return TRUE;
-}
-
 static UI_FUNCTIONS gFunctionTable = 
 {
 	UI_VidInit,
@@ -47,10 +41,16 @@ static UI_FUNCTIONS gFunctionTable =
 	UI_FinalCredits
 };
 
+#ifdef _WIN32
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT
+#endif
+
 //=======================================================================
 //			GetApi
 //=======================================================================
-int GetMenuAPI( UI_FUNCTIONS *pFunctionTable, ui_enginefuncs_t* pEngfuncsFromEngine, ui_globalvars_t *pGlobals )
+extern "C" EXPORT int GetMenuAPI(UI_FUNCTIONS *pFunctionTable, ui_enginefuncs_t* pEngfuncsFromEngine, ui_globalvars_t *pGlobals)
 {
 	if( !pFunctionTable || !pEngfuncsFromEngine )
 	{

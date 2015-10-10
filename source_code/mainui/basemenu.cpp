@@ -113,6 +113,8 @@ UI_DrawPic
 void UI_DrawPic( int x, int y, int width, int height, const int color, const char *pic )
 {
 	HIMAGE hPic = PIC_Load( pic );
+	if (!hPic)
+		return;
 
 	int r, g, b, a;
 	UnpackRGBA( r, g, b, a, color );
@@ -129,6 +131,8 @@ UI_DrawPicAdditive
 void UI_DrawPicAdditive( int x, int y, int width, int height, const int color, const char *pic )
 {
 	HIMAGE hPic = PIC_Load( pic );
+	if (!hPic)
+		return;
 
 	int r, g, b, a;
 	UnpackRGBA( r, g, b, a, color );
@@ -266,10 +270,11 @@ void UI_DrawString( int x, int y, int w, int h, const char *string, const int co
 			ch = *l++;
 			ch &= 255;
 
-			// fix for letter ¸
-			if( ch == 0xB8 ) ch = (byte)'å';
-			if( ch == 0xA8 ) ch = (byte)'Å';
-
+#ifdef _WIN32
+			// fix for letter ï¿½
+			if( ch == 0xB8 ) ch = (byte)'ï¿½';
+			if( ch == 0xA8 ) ch = (byte)'ï¿½';
+#endif
 			if( ch != ' ' )
 			{
 				if( shadow ) TextMessageDrawChar( xx + ofsX, yy + ofsY, charW, charH, ch, shadowModulate, uiStatic.hFont );
@@ -288,6 +293,7 @@ UI_DrawMouseCursor
 */
 void UI_DrawMouseCursor( void )
 {
+/* TODO: SDL2
 	menuCommon_s	*item;
 	HICON		hCursor = NULL;
 	int		i;
@@ -319,6 +325,7 @@ void UI_DrawMouseCursor( void )
 	if( !hCursor ) hCursor = (HICON)LoadCursor( NULL, (LPCTSTR)OCR_NORMAL );
 
 	SET_CURSOR( hCursor );
+*/
 }
 
 /*
@@ -340,7 +347,7 @@ void UI_DrawBackground_Callback( void *self )
 
 	// work out scaling factors
 	xScale = ScreenWidth / uiStatic.m_flTotalWidth;
-	yScale = ScreenHeight / uiStatic.m_flTotalHeight;
+	yScale = xScale;
 
 	// iterate and draw all the background pieces
 	ypos = 0;
@@ -490,20 +497,31 @@ UI_CursorMoved
 void UI_CursorMoved( menuFramework_s *menu )
 {
 	void (*callback)( void *self, int event );
+	menuCommon_s *curItem;
 
 	if( menu->cursor == menu->cursorPrev )
 		return;
 
 	if( menu->cursorPrev >= 0 && menu->cursorPrev < menu->numItems )
 	{
-		callback = ((menuCommon_s *)menu->items[menu->cursorPrev])->callback;
-		if( callback ) callback( menu->items[menu->cursorPrev], QM_LOSTFOCUS );
+		curItem = (menuCommon_s *)menu->items[menu->cursorPrev];
+
+		callback = curItem->callback;
+		if( callback ) callback( (void *)curItem, QM_LOSTFOCUS );
+
+		// Disable text editing
+		if( curItem->type == QMTYPE_FIELD ) g_engfuncs.pfnEnableTextInput( false );
 	}
 
 	if( menu->cursor >= 0 && menu->cursor < menu->numItems )
 	{
-		callback = ((menuCommon_s *)menu->items[menu->cursor])->callback;
-		if( callback ) callback( menu->items[menu->cursor], QM_GOTFOCUS );
+		curItem = (menuCommon_s *)menu->items[menu->cursor];
+
+		callback = curItem->callback;
+		if( callback ) callback( (void *)curItem, QM_GOTFOCUS );
+
+		// Enable text editing. It will open keyboard on Android.
+		if( curItem->type == QMTYPE_FIELD ) g_engfuncs.pfnEnableTextInput( true );
 	}
 }
 
@@ -795,6 +813,8 @@ const char *UI_DefaultKey( menuFramework_s *menu, int key, int down )
 		break;
 	case K_ENTER:
 	case K_KP_ENTER:
+	case K_AUX1:
+	case K_AUX13:
 		if( item )
 		{
 			if( !(item->flags & (QMF_GRAYED|QMF_INACTIVE|QMF_HIDDEN|QMF_MOUSEONLY)))
@@ -864,7 +884,7 @@ bool UI_StartBackGroundMap( void )
 	first = FALSE;
 
 	// some map is already running
-	if( !uiStatic.bgmapcount || CVAR_GET_FLOAT( "host_serverstate" ) || gpGlobals->demoplayback )
+	if( !uiStatic.bgmapcount || CL_IsActive() || gpGlobals->demoplayback )
 		return FALSE;
 
 	int bgmapid = RANDOM_LONG( 0, uiStatic.bgmapcount - 1 );
@@ -1459,10 +1479,9 @@ UI_VidInit
 int UI_VidInit( void )
 {
 	UI_Precache ();
-		
-	uiStatic.scaleX = ScreenWidth / 1024.0f;
-	uiStatic.scaleY = ScreenHeight / 768.0f;
-
+	// Sizes are based on screen height
+	uiStatic.scaleX = uiStatic.scaleY = ScreenHeight / 768.0f;
+	uiStatic.width = ScreenWidth / uiStatic.scaleX;
 	// move cursor to screen center
 	uiStatic.cursorX = ScreenWidth >> 1;
 	uiStatic.cursorY = ScreenHeight >> 1;
@@ -1542,7 +1561,7 @@ void UI_Init( void )
 	Cmd_AddCommand( "menu_vidmodes", UI_VidModes_Menu );
 	Cmd_AddCommand( "menu_customgame", UI_CustomGame_Menu );
 
-//	CHECK_MAP_LIST( TRUE );
+	CHECK_MAP_LIST( TRUE );
 
 	memset( uiEmptyString, ' ', sizeof( uiEmptyString ));	// HACKHACK
 	uiStatic.initialized = true;
@@ -1568,7 +1587,6 @@ void UI_Shutdown( void )
 		return;
 
 	Cmd_RemoveCommand( "menu_main" );
-	Cmd_RemoveCommand( "menu_newgame" );
 	Cmd_RemoveCommand( "menu_loadgame" );
 	Cmd_RemoveCommand( "menu_savegame" );
 	Cmd_RemoveCommand( "menu_saveload" );

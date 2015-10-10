@@ -73,7 +73,7 @@ GNU General Public License for more details.
 #define UI_MAX_FIELD_LINE		256
 #define UI_OUTLINE_WIDTH		uiStatic.outlineWidth	// outline thickness
 
-#define UI_MAXGAMES			100	// slots for savegame/demos
+#define UI_MAXGAMES			900	// slots for savegame/demos
 #define UI_MAX_SERVERS		32
 #define UI_MAX_BGMAPS		32
 
@@ -102,7 +102,7 @@ typedef enum
 	QMTYPE_FIELD,
 	QMTYPE_ACTION,
 	QMTYPE_BITMAP,
-	// CR: новый тип кнопки
+	// CR: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	QMTYPE_BM_BUTTON
 } menuType_t;
 
@@ -374,9 +374,12 @@ typedef struct
 
 	int		buttons_draw_width;	// scaled image what we drawing
 	int		buttons_draw_height;
+	int		width;
 } uiStatic_t;
 
 extern uiStatic_t		uiStatic;
+
+#define DLG_X ((uiStatic.width - 640) / 2 - 192) // Dialogs are 640px in width
 
 extern char		uiEmptyString[256];	// HACKHACK
 extern const char		*uiSoundIn;
@@ -434,6 +437,7 @@ void UI_PopMenu( void );
 
 // Precache
 void UI_Main_Precache( void );
+//void UI_NewGame_Precache( void );
 void UI_LoadGame_Precache( void );
 void UI_SaveGame_Precache( void );
 void UI_SaveLoad_Precache( void );
@@ -456,6 +460,7 @@ void UI_GoToSite_Precache( void );
 
 // Menus
 void UI_Main_Menu( void );
+//void UI_NewGame_Menu( void );
 void UI_LoadGame_Menu( void );
 void UI_SaveGame_Menu( void );
 void UI_SaveLoad_Menu( void );
