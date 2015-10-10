@@ -65,7 +65,7 @@ public:
 		pev->vuser1 = tr.vecPlaneNormal * -1;
 		UTIL_DecalTrace( &tr, DECAL_SCORCH1 + RANDOM_LONG( 0, 1 ));
 
-		SetThink( DieThink );
+		SetThink( &DieThink );
 		SetTouch( NULL );
 
 		pev->renderfx = kRenderLavaDeform;
@@ -118,7 +118,7 @@ void CFireBallSource :: Think( void )
 	pFireBall->pev->avelocity.x = RANDOM_FLOAT( -50, 50 );
 	pFireBall->pev->avelocity.y = RANDOM_FLOAT( -50, 50 );
 	pFireBall->pev->avelocity.z = RANDOM_FLOAT( -50, 50 );
-	pFireBall->SetTouch( CFireBall::LavaTouch );
+	pFireBall->SetTouch( &CFireBall::LavaTouch );
 	pFireBall->pev->vuser1 = Vector( 1, 1, 1 );
 
 	if( g_fXashEngine )
@@ -175,7 +175,7 @@ void CExploBox :: Spawn( void )
 	pev->health = 20;
 	pev->takedamage = DAMAGE_AIM;
 
-	SetThink( FallInit );
+	SetThink( &FallInit );
 	if (g_fXashEngine)
 		pev->nextthink = gpGlobals->time + 0.2;
 	else pev->nextthink = gpGlobals->time + 1.0; // make sure what client is changed hulls
@@ -263,7 +263,7 @@ void CExploBox :: Killed( entvars_t *pevAttacker, int iGib )
 		WRITE_BYTE( BREAK_METAL );
 	MESSAGE_END();
 
-	SetThink( SUB_Remove );
+	SetThink( &SUB_Remove );
 	pev->nextthink = pev->nextthink + 0.1;
 }
 
@@ -502,7 +502,7 @@ void CEventLighting :: LightingFire( void )
 	}
 
 	pev->nextthink = gpGlobals->time + 0.1;
-	SetThink( LightingFire );
+	SetThink( &LightingFire );
 
 	p1 = (pDoor1->pev->mins + pDoor1->pev->maxs) * 0.5f;
 	p1.z = pDoor1->pev->absmin.z - 16;

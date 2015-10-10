@@ -36,7 +36,7 @@ extern DLL_GLOBAL BOOL		g_fXashEngine;
 
 void CItem::StartItem( void )
 {
-	SetThink( PlaceItem );
+	SetThink( &PlaceItem );
 	pev->nextthink = gpGlobals->time + 0.2;	// items start after other solids
 }
 
@@ -46,7 +46,7 @@ void CItem::PlaceItem( void )
 	pev->solid = SOLID_TRIGGER;
 	pev->origin.z += 6;	// quake code
 
-	SetTouch( ItemTouch );
+	SetTouch( &ItemTouch );
 
 	if (UTIL_DropToFloor(this) == 0)
 	{
@@ -128,7 +128,7 @@ CBaseEntity* CItem::Respawn( void )
 
 	UTIL_SetOrigin( pev, g_pGameRules->VecItemRespawnSpot( this ) );// blip to whereever you should respawn.
 
-	SetThink ( Materialize );
+	SetThink ( &Materialize );
 	pev->nextthink = g_pGameRules->FlItemRespawnTime( this ); 
 	return this;
 }
@@ -142,7 +142,7 @@ void CItem::Materialize( void )
 		pev->effects &= ~EF_NODRAW;
 	}
 
-	SetTouch( ItemTouch );
+	SetTouch( &ItemTouch );
 }
 
 #define SF_HEALTH_ROTTEN 	1
@@ -971,7 +971,7 @@ void CWeaponBox::Spawn( void )
 	UTIL_SetSize( pev, Vector( -16, -16, 0 ), Vector( 16, 16, 56 ));
 
 	pev->nextthink = gpGlobals->time + 120;	// remove after 2 minutes
-	SetThink( SUB_Remove );
+	SetThink( &SUB_Remove );
 }
 
 //=========================================================

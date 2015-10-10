@@ -247,7 +247,7 @@ void CZombie :: Spawn( void )
 		m_iAIState = STATE_IDLE;
 		SetActivity( ACT_SLEEP );
 
-		SetThink( MonsterThink );
+		SetThink( &MonsterThink );
 		pev->nextthink = gpGlobals->time + (RANDOM_LONG( 1, 10 ) * 0.1f);
 	}
 	else
@@ -292,7 +292,7 @@ void CZombie :: ZombieDefeated( void )
 	else
 	{
 		ResetSequenceInfo( );
-		SetThink( MonsterThink );
+		SetThink( &MonsterThink );
 		pev->nextthink = gpGlobals->time + 0.1f;
 	}
 }
@@ -333,7 +333,7 @@ void CZombie :: HandleAnimEvent( MonsterEvent_t *pEvent )
 	case ZOMBIE_TEMPORARY_DEAD:
 		if( !pev->frags )
 		{
-			SetThink( ZombieDefeated );
+			SetThink( &ZombieDefeated );
 			pev->nextthink = gpGlobals->time + 5.0f;
 			StopAnimation(); // stop the animation!
 			pev->solid = SOLID_NOT;

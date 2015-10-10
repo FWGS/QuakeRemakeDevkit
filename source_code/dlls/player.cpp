@@ -366,7 +366,7 @@ void CBasePlayer::Killed( entvars_t *pevAttacker, int iGib )
 	pev->angles.x = 0;
 	pev->angles.z = 0;
 
-	SetThink(PlayerDeathThink);
+	SetThink(&PlayerDeathThink);
 	pev->nextthink = gpGlobals->time + 0.1;
 }
 

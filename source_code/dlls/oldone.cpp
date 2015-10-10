@@ -121,7 +121,7 @@ void CShubNiggurath :: Killed( entvars_t *pevAttacker, int iGib )
 	// players to the intermission spot
 
 	// wait for 1 second
-	SetThink( Finale2 );
+	SetThink( &Finale2 );
 	pev->nextthink = gpGlobals->time + 1.0f;
 }
 
@@ -138,7 +138,7 @@ void CShubNiggurath :: Finale2( void )
 
 	EMIT_SOUND( ENT(pev), CHAN_VOICE, "misc/r_tele1.wav", 1, ATTN_NORM );
 
-	SetThink( Finale3 );
+	SetThink( &Finale3 );
 	pev->nextthink = gpGlobals->time + 2.0f;
 }
 
@@ -149,7 +149,7 @@ void CShubNiggurath :: Finale3( void )
 	LIGHT_STYLE( 0, "abcdefghijklmlkjihgfedcb" );	// apply to world
 	UTIL_ScreenShake( pev->origin, 32.0f, 8.0f, 8.0f, 500.0f );
 
-	SetThink( DeathThink );
+	SetThink( &DeathThink );
 	pev->nextthink = gpGlobals->time + 2.0f;
 }
 
@@ -259,7 +259,7 @@ void CShubNiggurath :: Finale4( void )
 
 	LIGHT_STYLE( 0, "m" );
 
-	SetThink( Finale5 );
+	SetThink( &Finale5 );
 	pev->nextthink = gpGlobals->time + 40;
 }
 

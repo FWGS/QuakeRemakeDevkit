@@ -30,6 +30,8 @@ CBaseEntity
 
 #define FCAP_DONT_SAVE		0x80000000		// Don't save this
 
+#include "port.h"
+
 #include "saverestore.h"
 #include "animation.h"
 
@@ -38,7 +40,7 @@ CBaseEntity
 #ifdef _WIN32
 #define EXPORT	_declspec( dllexport )
 #else
-#define EXPORT	/* */
+#define EXPORT	__attribute__ ((visibility("default")))
 #endif
 
 extern "C" EXPORT int GetEntityAPI( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion );

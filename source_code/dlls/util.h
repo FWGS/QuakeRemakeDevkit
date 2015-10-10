@@ -15,6 +15,8 @@
 //
 // Misc utility code
 //
+#include "port.h"
+
 #ifndef ACTIVITY_H
 #include "activity.h"
 #endif

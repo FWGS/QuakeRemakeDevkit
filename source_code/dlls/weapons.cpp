@@ -148,10 +148,10 @@ void CNail::Spawn( void )
 	
 	// Safety removal
 	pev->nextthink = gpGlobals->time + 6;
-	SetThink( SUB_Remove );
+	SetThink( &SUB_Remove );
 	
 	// Touch
-	SetTouch( NailTouch );
+	SetTouch( &NailTouch );
 
 	// Model
 	SET_MODEL( ENT(pev), "models/spike.mdl" );
@@ -325,10 +325,10 @@ void CLaser::Spawn( void )
 	
 	// Safety removal
 	pev->nextthink = gpGlobals->time + 5;
-	SetThink( SUB_Remove );
+	SetThink( &SUB_Remove );
 	
 	// Touch
-	SetTouch( LaserTouch );
+	SetTouch( &LaserTouch );
 
 	// Model
 	SET_MODEL( ENT(pev), "models/laser.mdl" );
@@ -409,11 +409,11 @@ CRocket *CRocket::CreateRocket( Vector vecOrigin, Vector vecAngles, CBaseEntity 
 	pRocket->pev->angles = UTIL_VecToAngles( vecAngles );
 	
 	// Touch
-	pRocket->SetTouch( CRocket::RocketTouch );
+	pRocket->SetTouch( &CRocket::RocketTouch );
 
 	// Safety Remove
 	pRocket->pev->nextthink = gpGlobals->time + 5;
-	pRocket->SetThink( SUB_Remove );
+	pRocket->SetThink( &SUB_Remove );
 
 	// Effects
 //	pRocket->pev->effects |= EF_LIGHT;
@@ -444,7 +444,7 @@ CRocket *CRocket::CreateGrenade( Vector vecOrigin, Vector vecVelocity, CBaseEnti
 	pRocket->pev->friction = 0.5;
 
 	// Touch
-	pRocket->SetTouch( CRocket::GrenadeTouch );
+	pRocket->SetTouch( &CRocket::GrenadeTouch );
 
 	if (FClassnameIs( pOwner->pev, "monster_ogre"))
 		pRocket->pev->dmg = 40.0f;
@@ -459,7 +459,7 @@ CRocket *CRocket::CreateGrenade( Vector vecOrigin, Vector vecVelocity, CBaseEnti
 	}
 
 	pRocket->pev->nextthink = gpGlobals->time + 2.5;
-	pRocket->SetThink( CRocket::GrenadeExplode );
+	pRocket->SetThink( &CRocket::GrenadeExplode );
 
 	return pRocket;
 }
@@ -572,11 +572,11 @@ CZombieMissile *CZombieMissile :: CreateMissile( Vector vecOrigin, Vector vecOff
 	pMeat->pev->owner = pOwner->edict();
 	pMeat->pev->solid = SOLID_BBOX;
 	pMeat->Spawn();
-	pMeat->SetTouch( MeatTouch );
+	pMeat->SetTouch( &MeatTouch );
 
 	// Safety removal
 	pMeat->pev->nextthink = gpGlobals->time + 2.5f;
-	pMeat->SetThink( SUB_Remove );
+	pMeat->SetThink( &SUB_Remove );
 
 	// done
 	return pMeat;
@@ -596,7 +596,7 @@ CZombieMissile *CZombieMissile :: CreateSpray( Vector vecOrigin, Vector vecVeloc
 
 	// Safety removal
 	pMeat->pev->nextthink = gpGlobals->time + 1.0f;
-	pMeat->SetThink( SUB_Remove );
+	pMeat->SetThink( &SUB_Remove );
 
 	// done
 	return pMeat;
@@ -682,8 +682,8 @@ void CShalMissile :: Spawn( void )
 	UTIL_SetSize(pev, Vector( -1, -1, -1 ), Vector( 1, 1, 1 ));	// allow to explode with himself
 	UTIL_SetOrigin( pev, pev->origin );
 
-	SetTouch( ShalTouch );
-	SetThink( ShalHome );
+	SetTouch( &ShalTouch );
+	SetThink( &ShalHome );
 }
 
 void CShalMissile :: Precache( void )

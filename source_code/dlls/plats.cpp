@@ -202,14 +202,14 @@ void CFuncPlat :: Spawn( void )
 	else
 		m_vecPosition2.z = pev->origin.z - pev->size.z + 8;
 
-	SetUse( TriggerUse );
+	SetUse( &TriggerUse );
 
 	PlatSpawnInsideTrigger( this );
 
 	if ( !FStringNull(pev->targetname) )
 	{
 		m_toggle_state = TS_GOING_UP;
-		SetUse( PlatUse );
+		SetUse( &PlatUse );
 	}
 	else
 	{
@@ -249,7 +249,7 @@ void CFuncPlat :: GoDown( void )
 
 	ASSERT(m_toggle_state == TS_AT_TOP || m_toggle_state == TS_GOING_UP);
 	m_toggle_state = TS_GOING_DOWN;
-	SetMoveDone( HitBottom );
+	SetMoveDone( &HitBottom );
 	LinearMove( m_vecPosition2, pev->speed );
 }
 
@@ -263,7 +263,7 @@ void CFuncPlat :: GoUp( void )
 	
 	ASSERT(m_toggle_state == TS_AT_BOTTOM || m_toggle_state == TS_GOING_DOWN);
 	m_toggle_state = TS_GOING_UP;
-	SetMoveDone( HitTop );
+	SetMoveDone( &HitTop );
 	LinearMove( m_vecPosition1, pev->speed );
 }
 
@@ -282,7 +282,7 @@ void CFuncPlat :: HitTop( void )
 	m_toggle_state = TS_AT_TOP;
 
 	// After a delay, the platform will automatically start going down again.
-	SetThink( GoDown );
+	SetThink( &GoDown );
 	pev->nextthink = pev->ltime + 3.0;
 }
 
@@ -371,7 +371,7 @@ void CFuncTrain :: Spawn( void )
 		ALERT( at_error, "func_train without a target. Removed\n" );
 
 		pev->nextthink = pev->ltime + 0.1;
-		SetThink( SUB_Remove );
+		SetThink( &SUB_Remove );
 		return; 
 	}	
 
@@ -390,7 +390,7 @@ void CFuncTrain :: Spawn( void )
 	// start trains on the second frame, to make sure their targets have had
 	// a chance to spawn
 	pev->nextthink = pev->ltime + 0.1;
-	SetThink( Find );
+	SetThink( &Find );
 }
 
 void CFuncTrain :: Blocked( CBaseEntity *pOther )
@@ -404,7 +404,7 @@ void CFuncTrain :: Blocked( CBaseEntity *pOther )
 
 void CFuncTrain :: Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	if (m_pfnThink != Find)
+	if (m_pfnThink != &Find)
 		return; // already activated
 	Next();
 }
@@ -418,7 +418,7 @@ void CFuncTrain :: Find( void )
 		ALERT( at_error, "func_train couldn't find target %s. Removed\n", STRING( pev->target ));
 
 		pev->nextthink = pev->ltime + 0.1;
-		SetThink( SUB_Remove );
+		SetThink( &SUB_Remove );
 		return; 
 	}
 		
@@ -428,7 +428,7 @@ void CFuncTrain :: Find( void )
 	if ( FStringNull(pev->targetname) )
 	{	// not triggered, so start immediately
 		pev->nextthink = pev->ltime + 0.1;
-		SetThink( Next );
+		SetThink( &Next );
 	}
 }
 
@@ -443,7 +443,7 @@ void CFuncTrain :: Wait( void )
 	else
 		pev->nextthink = pev->ltime + 0.1;
 
-	SetThink( Next );	
+	SetThink( &Next );	
 }
 
 void CFuncTrain :: Next( void )
@@ -466,7 +466,7 @@ void CFuncTrain :: Next( void )
 
 	EMIT_SOUND (ENT(pev), CHAN_VOICE, (char*)STRING(pev->noise1), 1, ATTN_NORM);
 
-	SetMoveDone( Wait );
+	SetMoveDone( &Wait );
 	LinearMove( pTarg->pev->origin - pev->mins, pev->speed );
 }
 
@@ -500,7 +500,7 @@ void CTeleTrain :: Spawn( void )
 		ALERT( at_error, "misc_teleporttrain without a target. Removed\n" );
 
 		pev->nextthink = pev->ltime + 0.1;
-		SetThink( SUB_Remove );
+		SetThink( &SUB_Remove );
 		return; 
 	}
 
@@ -515,5 +515,5 @@ void CTeleTrain :: Spawn( void )
 	// start trains on the second frame, to make sure their targets have had
 	// a chance to spawn
 	pev->nextthink = pev->ltime + 0.1;
-	SetThink( Find );
+	SetThink( &Find );
 }

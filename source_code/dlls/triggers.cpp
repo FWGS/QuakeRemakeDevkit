@@ -144,7 +144,7 @@ void CTriggerMultiple :: Spawn( void )
 	}
 	else if (!FBitSet(pev->spawnflags, SF_TRIGGER_NOTOUCH))
 	{
-		SetTouch( MultiTouch );
+		SetTouch( &MultiTouch );
 	}
 }
 
@@ -186,7 +186,7 @@ void CTriggerMultiple :: ActivateMultiTrigger( CBaseEntity *pActivator )
 
 	if (m_flWait > 0)
 	{
-		SetThink( MultiWaitOver );
+		SetThink( &MultiWaitOver );
 		pev->nextthink = gpGlobals->time + m_flWait;
 	}
 	else
@@ -195,7 +195,7 @@ void CTriggerMultiple :: ActivateMultiTrigger( CBaseEntity *pActivator )
 		// called while C code is looping through area links...
 		SetTouch( NULL );
 		pev->nextthink = gpGlobals->time + 0.1;
-		SetThink(  SUB_Remove );
+		SetThink(  &SUB_Remove );
 	}
 }
 
@@ -442,7 +442,7 @@ void CTeleFrag::CreateTDeath( const Vector pos, const CBaseEntity *pOwner )
 	UTIL_SetSize( pTDeath->pev, pOwner->pev->mins - Vector( 1, 1, 1 ), pOwner->pev->maxs + Vector( 1, 1, 1 ));
 	UTIL_SetOrigin( pTDeath->pev, pos );
 	pTDeath->pev->nextthink = gpGlobals->time + 0.2;
-	pTDeath->SetThink( SUB_Remove );
+	pTDeath->SetThink( &SUB_Remove );
 	pTDeath->pev->owner = ENT( pOwner->pev );
 
 	gpGlobals->force_retouch++;	// make sure even still objects get hit
@@ -551,7 +551,7 @@ void CTriggerTeleport :: Touch( CBaseEntity *pOther )
 		SetTouch( NULL );
 		ALERT( at_error, "trigger_teleport: couldn't find target!\n" );
 		pev->nextthink = gpGlobals->time + 0.1;
-		SetThink(  SUB_Remove );
+		SetThink(  &SUB_Remove );
 		return;	
 	}
 
@@ -683,7 +683,7 @@ void CTriggerOnlyRegistered::Touch( CBaseEntity *pOther )
 
 		SetTouch( NULL );
 		pev->nextthink = gpGlobals->time + 0.1;
-		SetThink(  SUB_Remove );
+		SetThink( &SUB_Remove );
 	}
 	else
 	{
@@ -933,7 +933,7 @@ void CChangeLevel :: Spawn( void )
 		ALERT( at_console, "a trigger_changelevel doesn't have a map" );
 
 	InitTrigger();
-	SetTouch( TouchChangeLevel );
+	SetTouch( &TouchChangeLevel );
 }
 
 void CChangeLevel :: TouchChangeLevel( CBaseEntity *pOther )
@@ -971,7 +971,7 @@ void CChangeLevel :: TouchChangeLevel( CBaseEntity *pOther )
 		return;
 	}
 
-	SetThink( ExecuteChangeLevel );
+	SetThink( &ExecuteChangeLevel );
 	pev->nextthink = gpGlobals->time + 0.1;
 }
 /*
