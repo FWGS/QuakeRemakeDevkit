@@ -707,7 +707,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 	vec3_t camAngles, camForward, camRight, camUp;
 	cl_entity_t *pwater;
 
-	V_DriftPitch ( pparams );
+	//V_DriftPitch ( pparams );
 
 	if ( gEngfuncs.IsSpectateOnly() )
 	{
@@ -1101,7 +1101,7 @@ V_Init
 */
 void V_Init (void)
 {
-	gEngfuncs.pfnAddCommand ("centerview", V_StartPitchDrift );
+	//gEngfuncs.pfnAddCommand ("centerview", V_StartPitchDrift );
 	gEngfuncs.pfnAddCommand ("v_cshift", V_cshift_f);	
 	gEngfuncs.pfnAddCommand ("bf", V_BonusFlash_f);
 	
