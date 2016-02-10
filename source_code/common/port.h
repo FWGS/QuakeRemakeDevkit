@@ -89,6 +89,10 @@ typedef struct RECT_s
 #endif
 #endif
 
+#ifdef NULL
+#undef NULL
+#endif
+
 #ifndef NULL
 	#ifdef __cplusplus
 		#define NULL    0

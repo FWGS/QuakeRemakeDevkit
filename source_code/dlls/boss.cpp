@@ -67,8 +67,8 @@ void CChthon :: Spawn( void )
 
 	Precache( );
 
-	SetUse( &Awake );
-	SetThink( &MonsterThink );
+	SetUse( &CChthon::Awake );
+	SetThink( &CQuakeMonster::MonsterThink );
 
 	// add one monster to stat
 	gpWorld->total_monsters++;

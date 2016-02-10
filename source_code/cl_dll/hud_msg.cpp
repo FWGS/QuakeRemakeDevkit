@@ -201,7 +201,7 @@ int CHud :: MsgFunc_TempEntity( const char *pszName, int iSize, void *pbuf )
 		else
 		{
 			char soundpath[32];
-			sprintf( soundpath, "weapons/ric%i.wav", gEngfuncs.pfnRandomLong( 1, 3 ));
+			sprintf( soundpath, "weapons/ric%li.wav", gEngfuncs.pfnRandomLong( 1, 3 ));
 			gEngfuncs.pfnPlaySoundByNameAtLocation( soundpath, 1.0, pos );
 		}
 		break;

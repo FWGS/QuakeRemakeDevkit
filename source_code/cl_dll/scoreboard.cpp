@@ -95,6 +95,8 @@ We have a minimum width of 1-320 - we could have the field widths scale with it?
 
 int CHudScoreboard :: Draw( float fTime )
 {
+	int i, j;
+
 	if ( !gHUD.showscores && gHUD.stats[STAT_HEALTH] > 0 && !gHUD.m_iIntermission )
 		return 1;
 
@@ -134,7 +136,7 @@ int CHudScoreboard :: Draw( float fTime )
 	}
 
 	// clear out team scores
-	for ( int i = 1; i <= m_iNumTeams; i++ )
+	for ( i = 1; i <= m_iNumTeams; i++ )
 	{
 		if ( !g_TeamInfo[i].scores_overriden )
 			g_TeamInfo[i].frags = g_TeamInfo[i].deaths = 0;
@@ -151,7 +153,7 @@ int CHudScoreboard :: Draw( float fTime )
 			continue; // skip over players who are not in a team
 
 		// find what team this player is in
-		for ( int j = 1; j <= m_iNumTeams; j++ )
+		for ( j = 1; j <= m_iNumTeams; j++ )
 		{
 			if ( !stricmp( g_PlayerExtraInfo[i].teamname, g_TeamInfo[j].name ) )
 				break;
@@ -416,6 +418,7 @@ int CHudScoreboard :: MsgFunc_ScoreInfo( const char *pszName, int iSize, void *p
 //		string: client team name
 int CHudScoreboard :: MsgFunc_TeamInfo( const char *pszName, int iSize, void *pbuf )
 {
+	int i, j;
 	BEGIN_READ( pbuf, iSize );
 	short cl = READ_BYTE();
 	
@@ -427,7 +430,7 @@ int CHudScoreboard :: MsgFunc_TeamInfo( const char *pszName, int iSize, void *pb
 	// rebuild the list of teams
 
 	// clear out player counts from teams
-	for ( int i = 1; i <= m_iNumTeams; i++ )
+	for ( i = 1; i <= m_iNumTeams; i++ )
 	{
 		g_TeamInfo[i].players = 0;
 	}
@@ -444,7 +447,7 @@ int CHudScoreboard :: MsgFunc_TeamInfo( const char *pszName, int iSize, void *pb
 			continue; // skip over players who are not in a team
 
 		// is this player in an existing team?
-		for ( int j = 1; j <= m_iNumTeams; j++ )
+		for ( j = 1; j <= m_iNumTeams; j++ )
 		{
 			if ( g_TeamInfo[j].name[0] == '\0' )
 				break;
@@ -456,7 +459,7 @@ int CHudScoreboard :: MsgFunc_TeamInfo( const char *pszName, int iSize, void *pb
 		if ( j > m_iNumTeams )
 		{ // they aren't in a listed team, so make a new one
 			// search through for an empty team slot
-			for ( int j = 1; j <= m_iNumTeams; j++ )
+			for ( j = 1; j <= m_iNumTeams; j++ )
 			{
 				if ( g_TeamInfo[j].name[0] == '\0' )
 					break;
@@ -488,11 +491,12 @@ int CHudScoreboard :: MsgFunc_TeamInfo( const char *pszName, int iSize, void *pb
 // if this message is never received, then scores will simply be the combined totals of the players.
 int CHudScoreboard :: MsgFunc_TeamScore( const char *pszName, int iSize, void *pbuf )
 {
+	int i;
 	BEGIN_READ( pbuf, iSize );
 	char *TeamName = READ_STRING();
 
 	// find the team matching the name
-	for ( int i = 1; i <= m_iNumTeams; i++ )
+	for ( i = 1; i <= m_iNumTeams; i++ )
 	{
 		if ( !stricmp( TeamName, g_TeamInfo[i].name ) )
 			break;

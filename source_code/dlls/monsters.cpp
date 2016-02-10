@@ -348,7 +348,7 @@ void CQuakeMonster :: HuntTarget ( void )
 
 	pev->ideal_yaw = UTIL_VecToYaw (m_hEnemy->pev->origin - pev->origin);
 
-	SetThink( &MonsterThink );
+	SetThink( &CQuakeMonster::MonsterThink );
 	pev->nextthink = gpGlobals->time + 0.1;
 
 	MonsterRun();	// change activity
@@ -589,7 +589,7 @@ void CQuakeMonster :: MonsterUse( CBaseEntity *pActivator, CBaseEntity *pCaller,
 	// its sound is still heard
 	m_hEnemy = pActivator;
 
-	SetThink( &FoundTarget );
+	SetThink( &CQuakeMonster::FoundTarget );
 	pev->nextthink = gpGlobals->time + 0.1;
 }
 
@@ -1070,7 +1070,7 @@ void CQuakeMonster :: FlyMonsterInitThink( void )
 		pev->yaw_speed = 10;
 
 	SetEyePosition();
-	SetUse( &MonsterUse );
+	SetUse( &CQuakeMonster::MonsterUse );
 
 	pev->flags |= (FL_FLY|FL_MONSTER);
 
@@ -1108,7 +1108,7 @@ void CQuakeMonster :: FlyMonsterInitThink( void )
 	}
 
 	// run AI for monster
-	SetThink( &MonsterThink );
+	SetThink( &CQuakeMonster::MonsterThink );
 	MonsterThink();
 }
 
@@ -1116,7 +1116,7 @@ void CQuakeMonster :: FlyMonsterInit( void )
 {
 	// spread think times so they don't all happen at same time
 	pev->nextthink += RANDOM_FLOAT( 0.1, 0.4 );
-	SetThink( &FlyMonsterInitThink );
+	SetThink( &CQuakeMonster::FlyMonsterInitThink );
 
 	// add one monster to stat
 	gpWorld->total_monsters++;
@@ -1141,7 +1141,7 @@ void CQuakeMonster :: WalkMonsterInitThink( void )
 		pev->yaw_speed = 20;
 
 	SetEyePosition();
-	SetUse( &MonsterUse );
+	SetUse( &CQuakeMonster::MonsterUse );
 
 	pev->flags |= FL_MONSTER;
 
@@ -1177,7 +1177,7 @@ void CQuakeMonster :: WalkMonsterInitThink( void )
 	}
 
 	// run AI for monster
-	SetThink( &MonsterThink );
+	SetThink( &CQuakeMonster::MonsterThink );
 	MonsterThink();
 }
 
@@ -1185,7 +1185,7 @@ void CQuakeMonster :: WalkMonsterInit( void )
 {
 	// spread think times so they don't all happen at same time
 	pev->nextthink += RANDOM_FLOAT( 0.1, 0.4 );
-	SetThink( &WalkMonsterInitThink );
+	SetThink( &CQuakeMonster::WalkMonsterInitThink );
 
 	// add one monster to stat
 	gpWorld->total_monsters++;
@@ -1200,7 +1200,7 @@ void CQuakeMonster :: SwimMonsterInitThink( void )
 		pev->yaw_speed = 10;
 
 	SetEyePosition();
-	SetUse( &MonsterUse );
+	SetUse( &CQuakeMonster::MonsterUse );
 
 	pev->flags |= (FL_MONSTER|FL_SWIM);
 
@@ -1236,7 +1236,7 @@ void CQuakeMonster :: SwimMonsterInitThink( void )
 	}
 
 	// run AI for monster
-	SetThink( &MonsterThink );
+	SetThink( &CQuakeMonster::MonsterThink );
 	MonsterThink();
 }
 
@@ -1244,7 +1244,7 @@ void CQuakeMonster :: SwimMonsterInit( void )
 {
 	// spread think times so they don't all happen at same time
 	pev->nextthink += RANDOM_FLOAT( 0.1, 0.4 );
-	SetThink( &SwimMonsterInitThink );
+	SetThink( &CQuakeMonster::SwimMonsterInitThink );
 
 	// add one monster to stat
 	gpWorld->total_monsters++;
