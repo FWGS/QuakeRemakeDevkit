@@ -303,7 +303,7 @@ void SV_NewChaseDir( CBaseEntity *pActor, CBaseEntity *pEnemy, float flDist )
 	}
 
 	// try other directions
-	if((( rand() & 3 ) & 1 ) || abs( deltay ) > abs( deltax ))
+	if((( rand() & 3 ) & 1 ) || fabs( deltay ) > fabs( deltax ))
 	{
 		tdir = d[1];
 		d[1] = d[2];

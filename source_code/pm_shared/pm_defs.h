@@ -38,6 +38,8 @@
 
 #include "usercmd.h"
 
+#include "com_model.h"
+
 // physent_t
 typedef struct physent_s
 {

@@ -118,8 +118,10 @@ int CHud :: DrawHudNumberString( int xpos, int ypos, int iMinX, int iNumber, int
 // draws a string from right to left (right-aligned)
 int CHud :: DrawHudStringReverse( int xpos, int ypos, int iMinX, char *szString, int r, int g, int b )
 {
+	char *szIt;
+
 	// find the end of the string
-	for ( char *szIt = szString; *szIt != 0; szIt++ )
+	for ( szIt = szString; *szIt != 0; szIt++ )
 	{ // we should count the length?		
 	}
 
