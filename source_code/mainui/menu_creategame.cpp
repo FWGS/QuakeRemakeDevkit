@@ -36,10 +36,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ID_MAXCLIENTS	7
 #define ID_HOSTNAME		8
 #define ID_PASSWORD		9
-#define ID_DEDICATED	10
+#define ID_HLTV		10
+#define ID_DEDICATED	11
 
-#define ID_MSGBOX	 	11
-#define ID_MSGTEXT	 	12
+#define ID_MSGBOX	 	12
+#define ID_MSGTEXT	 	13
 #define ID_YES	 	130
 #define ID_NO	 	131
 
@@ -63,6 +64,7 @@ typedef struct
 	menuField_s	maxClients;
 	menuField_s	hostName;
 	menuField_s	password;
+	menuCheckBox_s	hltv;
 	menuCheckBox_s	dedicatedServer;
 
 	// newgame prompt dialog
@@ -96,6 +98,9 @@ static void UI_CreateGame_Begin( void )
 	CVAR_SET_FLOAT( "maxplayers", atoi( uiCreateGame.maxClients.buffer ));
 	CVAR_SET_STRING( "hostname", uiCreateGame.hostName.buffer );
 	CVAR_SET_STRING( "defaultmap", uiCreateGame.mapName[uiCreateGame.mapsList.curItem] );
+	CVAR_SET_FLOAT( "hltv", uiCreateGame.hltv.enabled );
+
+	BACKGROUND_TRACK( NULL, NULL );
 
 	// all done, start server
 	if( uiCreateGame.dedicatedServer.enabled )
@@ -137,6 +142,7 @@ static void UI_PromptDialog( void )
 	uiCreateGame.hostName.generic.flags ^= QMF_INACTIVE;
 	uiCreateGame.password.generic.flags ^= QMF_INACTIVE;
 	uiCreateGame.dedicatedServer.generic.flags ^= QMF_INACTIVE;
+	uiCreateGame.hltv.generic.flags ^= QMF_INACTIVE;
 	uiCreateGame.mapsList.generic.flags ^= QMF_INACTIVE;
 
 	uiCreateGame.msgBox.generic.flags ^= QMF_HIDDEN;
@@ -200,10 +206,10 @@ static void UI_CreateGame_GetMapsList( void )
 		if( numMaps >= UI_MAXGAMES ) break;
 		StringConcat( uiCreateGame.mapName[numMaps], token, sizeof( uiCreateGame.mapName[0] ));
 		StringConcat( uiCreateGame.mapsDescription[numMaps], token, MAPNAME_LENGTH );
-		StringConcat( uiCreateGame.mapsDescription[numMaps], uiEmptyString, MAPNAME_LENGTH );
+		AddSpaces( uiCreateGame.mapsDescription[numMaps], MAPNAME_LENGTH );
 		if(( pfile = COM_ParseFile( pfile, token )) == NULL ) break; // unexpected end of file
 		StringConcat( uiCreateGame.mapsDescription[numMaps], token, TITLE_LENGTH );
-		StringConcat( uiCreateGame.mapsDescription[numMaps], uiEmptyString, TITLE_LENGTH );
+		AddSpaces( uiCreateGame.mapsDescription[numMaps], TITLE_LENGTH );
 		uiCreateGame.mapsDescriptionPtr[numMaps] = uiCreateGame.mapsDescription[numMaps];
 		numMaps++;
 	}
@@ -226,6 +232,7 @@ static void UI_CreateGame_Callback( void *self, int event )
 
 	switch( item->id )
 	{
+	case ID_HLTV:
 	case ID_DEDICATED:
 		if( event == QM_PRESSED )
 			((menuCheckBox_s *)self)->focusPic = UI_CHECKBOX_PRESSED;
@@ -269,16 +276,16 @@ static void UI_CreateGame_Init( void )
 	uiCreateGame.menu.keyFunc = UI_CreateGame_KeyFunc;
 
 	StringConcat( uiCreateGame.hintText, "Map", MAPNAME_LENGTH );
-	StringConcat( uiCreateGame.hintText, uiEmptyString, MAPNAME_LENGTH );
+	AddSpaces( uiCreateGame.hintText, MAPNAME_LENGTH );
 	StringConcat( uiCreateGame.hintText, "Title", TITLE_LENGTH );
-	StringConcat( uiCreateGame.hintText, uiEmptyString, TITLE_LENGTH );
+	AddSpaces( uiCreateGame.hintText, TITLE_LENGTH );
 
 	uiCreateGame.background.generic.id = ID_BACKGROUND;
 	uiCreateGame.background.generic.type = QMTYPE_BITMAP;
 	uiCreateGame.background.generic.flags = QMF_INACTIVE;
 	uiCreateGame.background.generic.x = 0;
 	uiCreateGame.background.generic.y = 0;
-	uiCreateGame.background.generic.width = 1024;
+	uiCreateGame.background.generic.width = uiStatic.width;
 	uiCreateGame.background.generic.height = 768;
 	uiCreateGame.background.pic = ART_BACKGROUND;
 
@@ -333,6 +340,15 @@ static void UI_CreateGame_Init( void )
 	uiCreateGame.dedicatedServer.generic.callback = UI_CreateGame_Callback;
 	uiCreateGame.dedicatedServer.generic.statusText = "faster, but you can't join the server from this machine";
 
+	uiCreateGame.hltv.generic.id = ID_HLTV;
+	uiCreateGame.hltv.generic.type = QMTYPE_CHECKBOX;
+	uiCreateGame.hltv.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_ACT_ONRELEASE|QMF_MOUSEONLY|QMF_DROPSHADOW;
+	uiCreateGame.hltv.generic.name = "HLTV";
+	uiCreateGame.hltv.generic.x = 72;
+	uiCreateGame.hltv.generic.y = 635;
+	uiCreateGame.hltv.generic.callback = UI_CreateGame_Callback;
+	uiCreateGame.hltv.generic.statusText = "enable hltv mode in multiplayer";
+
 	uiCreateGame.hintMessage.generic.id = ID_TABLEHINT;
 	uiCreateGame.hintMessage.generic.type = QMTYPE_ACTION;
 	uiCreateGame.hintMessage.generic.flags = QMF_INACTIVE|QMF_SMALLFONT;
@@ -370,7 +386,7 @@ static void UI_CreateGame_Init( void )
 	uiCreateGame.maxClients.generic.y = 360;
 	uiCreateGame.maxClients.generic.width = 205;
 	uiCreateGame.maxClients.generic.height = 32;
-	uiCreateGame.maxClients.maxLength = 3;
+	uiCreateGame.maxClients.maxLength = 2;
 
 	if( CVAR_GET_FLOAT( "maxplayers" ) <= 1 )
 		strcpy( uiCreateGame.maxClients.buffer, "8" );
@@ -391,7 +407,7 @@ static void UI_CreateGame_Init( void )
 	uiCreateGame.msgBox.generic.type = QMTYPE_ACTION;
 	uiCreateGame.msgBox.generic.flags = QMF_INACTIVE|QMF_HIDDEN;
 	uiCreateGame.msgBox.generic.ownerdraw = UI_MsgBox_Ownerdraw; // just a fill rectangle
-	uiCreateGame.msgBox.generic.x = 192;
+	uiCreateGame.msgBox.generic.x = DLG_X + 192;
 	uiCreateGame.msgBox.generic.y = 256;
 	uiCreateGame.msgBox.generic.width = 640;
 	uiCreateGame.msgBox.generic.height = 256;
@@ -400,21 +416,21 @@ static void UI_CreateGame_Init( void )
 	uiCreateGame.dlgMessage1.generic.type = QMTYPE_ACTION;
 	uiCreateGame.dlgMessage1.generic.flags = QMF_INACTIVE|QMF_HIDDEN|QMF_DROPSHADOW;
 	uiCreateGame.dlgMessage1.generic.name = "Starting a new game will exit";
-	uiCreateGame.dlgMessage1.generic.x = 248;
+	uiCreateGame.dlgMessage1.generic.x = DLG_X + 248;
 	uiCreateGame.dlgMessage1.generic.y = 280;
 
 	uiCreateGame.dlgMessage2.generic.id = ID_MSGTEXT;
 	uiCreateGame.dlgMessage2.generic.type = QMTYPE_ACTION;
 	uiCreateGame.dlgMessage2.generic.flags = QMF_INACTIVE|QMF_HIDDEN|QMF_DROPSHADOW;
 	uiCreateGame.dlgMessage2.generic.name = "any current game, OK to exit?";
-	uiCreateGame.dlgMessage2.generic.x = 248;
+	uiCreateGame.dlgMessage2.generic.x = DLG_X + 248;
 	uiCreateGame.dlgMessage2.generic.y = 310;
 
 	uiCreateGame.yes.generic.id = ID_YES;
 	uiCreateGame.yes.generic.type = QMTYPE_BM_BUTTON;
 	uiCreateGame.yes.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_HIDDEN|QMF_DROPSHADOW;
 	uiCreateGame.yes.generic.name = "Ok";
-	uiCreateGame.yes.generic.x = 380;
+	uiCreateGame.yes.generic.x = DLG_X + 380;
 	uiCreateGame.yes.generic.y = 460;
 	uiCreateGame.yes.generic.callback = UI_CreateGame_Callback;
 
@@ -424,7 +440,7 @@ static void UI_CreateGame_Init( void )
 	uiCreateGame.no.generic.type = QMTYPE_BM_BUTTON;
 	uiCreateGame.no.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_HIDDEN|QMF_DROPSHADOW;
 	uiCreateGame.no.generic.name = "Cancel";
-	uiCreateGame.no.generic.x = 530;
+	uiCreateGame.no.generic.x = DLG_X + 530;
 	uiCreateGame.no.generic.y = 460;
 	uiCreateGame.no.generic.callback = UI_CreateGame_Callback;
 
@@ -441,6 +457,7 @@ static void UI_CreateGame_Init( void )
 	UI_AddItem( &uiCreateGame.menu, (void *)&uiCreateGame.hostName );
 	UI_AddItem( &uiCreateGame.menu, (void *)&uiCreateGame.password );
 	UI_AddItem( &uiCreateGame.menu, (void *)&uiCreateGame.dedicatedServer );
+	UI_AddItem( &uiCreateGame.menu, (void *)&uiCreateGame.hltv );
 	UI_AddItem( &uiCreateGame.menu, (void *)&uiCreateGame.hintMessage );
 	UI_AddItem( &uiCreateGame.menu, (void *)&uiCreateGame.mapsList );
 	UI_AddItem( &uiCreateGame.menu, (void *)&uiCreateGame.msgBox );

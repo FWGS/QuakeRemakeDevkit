@@ -52,16 +52,13 @@ HL1_OBJS = \
         ${HL1_OBJ_DIR}/StudioModelRenderer.o \
         ${HL1_OBJ_DIR}/text_message.o \
         ${HL1_OBJ_DIR}/util.o \
-        ${HL1_OBJ_DIR}/view.o \
-
+        ${HL1_OBJ_DIR}/view.o
 	
 PM_SHARED_OBJS = \
 	$(PM_SHARED_OBJ_DIR)/pm_debug.o \
 	$(PM_SHARED_OBJ_DIR)/pm_shared.o \
-	$(PM_SHARED_OBJ_DIR)/pm_math.o \
+	$(PM_SHARED_OBJ_DIR)/pm_math.o
 	
-
-
 all: client.$(SHLIBEXT)
 
 client.$(SHLIBEXT): $(HL1_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(DLL_OBJS) $(PM_SHARED_OBJS)

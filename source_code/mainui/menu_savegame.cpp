@@ -142,11 +142,11 @@ static void UI_SaveGame_GetGameList( void )
 		// create new entry for current save game
 		strncpy( uiSaveGame.saveName[i], "new", CS_SIZE );
 		StringConcat( uiSaveGame.saveDescription[i], "Current", TIME_LENGTH );
-		StringConcat( uiSaveGame.saveDescription[i], uiEmptyString, TIME_LENGTH ); // fill remaining entries
+		AddSpaces( uiSaveGame.saveDescription[i], TIME_LENGTH ); // fill remaining entries
 		StringConcat( uiSaveGame.saveDescription[i], "New Saved Game", NAME_LENGTH );
-		StringConcat( uiSaveGame.saveDescription[i], uiEmptyString, NAME_LENGTH );
+		AddSpaces( uiSaveGame.saveDescription[i], NAME_LENGTH );
 		StringConcat( uiSaveGame.saveDescription[i], "New", GAMETIME_LENGTH );
-		StringConcat( uiSaveGame.saveDescription[i], uiEmptyString, GAMETIME_LENGTH );
+		AddSpaces( uiSaveGame.saveDescription[i], GAMETIME_LENGTH );
 		uiSaveGame.saveDescriptionPtr[i] = uiSaveGame.saveDescription[i];
 		i++;
 	}
@@ -162,9 +162,9 @@ static void UI_SaveGame_GetGameList( void )
 			{
 				// get name string even if not found - SV_GetComment can be mark saves
 				// as <CORRUPTED> <OLD VERSION> etc
-				StringConcat( uiSaveGame.saveDescription[i], uiEmptyString, TIME_LENGTH );
+				AddSpaces( uiSaveGame.saveDescription[i], TIME_LENGTH );
 				StringConcat( uiSaveGame.saveDescription[i], comment, NAME_LENGTH );
-				StringConcat( uiSaveGame.saveDescription[i], uiEmptyString, NAME_LENGTH );
+				AddSpaces( uiSaveGame.saveDescription[i], NAME_LENGTH );
 				uiSaveGame.saveDescriptionPtr[i] = uiSaveGame.saveDescription[i];
 				COM_FileBase( filenames[j], uiSaveGame.saveName[i] );
 				COM_FileBase( filenames[j], uiSaveGame.delName[i] );
@@ -181,11 +181,11 @@ static void UI_SaveGame_GetGameList( void )
 		StringConcat( uiSaveGame.saveDescription[i], comment + CS_SIZE, TIME_LENGTH );
 		StringConcat( uiSaveGame.saveDescription[i], " ", TIME_LENGTH );
 		StringConcat( uiSaveGame.saveDescription[i], comment + CS_SIZE + CS_TIME, TIME_LENGTH );
-		StringConcat( uiSaveGame.saveDescription[i], uiEmptyString, TIME_LENGTH ); // fill remaining entries
+		AddSpaces( uiSaveGame.saveDescription[i], TIME_LENGTH ); // fill remaining entries
 		StringConcat( uiSaveGame.saveDescription[i], comment, NAME_LENGTH );
-		StringConcat( uiSaveGame.saveDescription[i], uiEmptyString, NAME_LENGTH );
+		AddSpaces( uiSaveGame.saveDescription[i], NAME_LENGTH );
 		StringConcat( uiSaveGame.saveDescription[i], comment + CS_SIZE + (CS_TIME * 2), GAMETIME_LENGTH );
-		StringConcat( uiSaveGame.saveDescription[i], uiEmptyString, GAMETIME_LENGTH );
+		AddSpaces( uiSaveGame.saveDescription[i], GAMETIME_LENGTH );
 		uiSaveGame.saveDescriptionPtr[i] = uiSaveGame.saveDescription[i];
 	}
 
@@ -322,18 +322,18 @@ static void UI_SaveGame_Init( void )
 	uiSaveGame.menu.keyFunc = UI_SaveGame_KeyFunc;
 
 	StringConcat( uiSaveGame.hintText, "Time", TIME_LENGTH );
-	StringConcat( uiSaveGame.hintText, uiEmptyString, TIME_LENGTH );
+	AddSpaces( uiSaveGame.hintText, TIME_LENGTH );
 	StringConcat( uiSaveGame.hintText, "Game", NAME_LENGTH );
-	StringConcat( uiSaveGame.hintText, uiEmptyString, NAME_LENGTH );
+	AddSpaces( uiSaveGame.hintText, NAME_LENGTH );
 	StringConcat( uiSaveGame.hintText, "Elapsed time", GAMETIME_LENGTH );
-	StringConcat( uiSaveGame.hintText, uiEmptyString, GAMETIME_LENGTH );
+	AddSpaces( uiSaveGame.hintText, GAMETIME_LENGTH );
 
 	uiSaveGame.background.generic.id = ID_BACKGROUND;
 	uiSaveGame.background.generic.type = QMTYPE_BITMAP;
 	uiSaveGame.background.generic.flags = QMF_INACTIVE;
 	uiSaveGame.background.generic.x = 0;
 	uiSaveGame.background.generic.y = 0;
-	uiSaveGame.background.generic.width = 1024;
+	uiSaveGame.background.generic.width = uiStatic.width;
 	uiSaveGame.background.generic.height = 768;
 	uiSaveGame.background.pic = ART_BACKGROUND;
 
@@ -409,7 +409,7 @@ static void UI_SaveGame_Init( void )
 	uiSaveGame.msgBox.generic.type = QMTYPE_ACTION;
 	uiSaveGame.msgBox.generic.flags = QMF_INACTIVE|QMF_HIDDEN;
 	uiSaveGame.msgBox.generic.ownerdraw = UI_MsgBox_Ownerdraw; // just a fill rectangle
-	uiSaveGame.msgBox.generic.x = 192;
+	uiSaveGame.msgBox.generic.x = DLG_X + 192;
 	uiSaveGame.msgBox.generic.y = 256;
 	uiSaveGame.msgBox.generic.width = 640;
 	uiSaveGame.msgBox.generic.height = 256;
@@ -418,14 +418,14 @@ static void UI_SaveGame_Init( void )
 	uiSaveGame.promptMessage.generic.type = QMTYPE_ACTION;
 	uiSaveGame.promptMessage.generic.flags = QMF_INACTIVE|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiSaveGame.promptMessage.generic.name = "Delete selected game?";
-	uiSaveGame.promptMessage.generic.x = 315;
+	uiSaveGame.promptMessage.generic.x = DLG_X + 315;
 	uiSaveGame.promptMessage.generic.y = 280;
 
 	uiSaveGame.yes.generic.id = ID_YES;
 	uiSaveGame.yes.generic.type = QMTYPE_BM_BUTTON;
 	uiSaveGame.yes.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiSaveGame.yes.generic.name = "Ok";
-	uiSaveGame.yes.generic.x = 380;
+	uiSaveGame.yes.generic.x = DLG_X + 380;
 	uiSaveGame.yes.generic.y = 460;
 	uiSaveGame.yes.generic.callback = UI_SaveGame_Callback;
 
@@ -435,7 +435,7 @@ static void UI_SaveGame_Init( void )
 	uiSaveGame.no.generic.type = QMTYPE_BM_BUTTON;
 	uiSaveGame.no.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiSaveGame.no.generic.name = "Cancel";
-	uiSaveGame.no.generic.x = 530;
+	uiSaveGame.no.generic.x = DLG_X + 530;
 	uiSaveGame.no.generic.y = 460;
 	uiSaveGame.no.generic.callback = UI_SaveGame_Callback;
 

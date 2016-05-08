@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "extdll.h"
 #include "basemenu.h"
 #include "utils.h"
-#include "../cl_dll/kbutton.h"
+#include "kbutton.h"
 #include "menu_btnsbmp_table.h"
 #include "menu_strings.h"
 
@@ -196,7 +196,7 @@ static void UI_AdvControls_Init( void )
 	uiAdvControls.background.generic.flags = QMF_INACTIVE;
 	uiAdvControls.background.generic.x = 0;
 	uiAdvControls.background.generic.y = 0;
-	uiAdvControls.background.generic.width = 1024;
+	uiAdvControls.background.generic.width = uiStatic.width;
 	uiAdvControls.background.generic.height = 768;
 	uiAdvControls.background.pic = ART_BACKGROUND;
 

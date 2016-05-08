@@ -188,7 +188,7 @@ static void UI_GameOptions_Init( void )
 	uiGameOptions.background.generic.flags = QMF_INACTIVE;
 	uiGameOptions.background.generic.x = 0;
 	uiGameOptions.background.generic.y = 0;
-	uiGameOptions.background.generic.width = 1024;
+	uiGameOptions.background.generic.width = uiStatic.width;
 	uiGameOptions.background.generic.height = 768;
 	uiGameOptions.background.pic = ART_BACKGROUND;
 
@@ -275,13 +275,14 @@ static void UI_GameOptions_Init( void )
 
 	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.background );
 	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.banner );
-	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.done );
-	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.cancel );
+
 	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.maxFPS );
 	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.maxFPSmessage );
 	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.hand );
 	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.alwaysRun );
 	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.allowDownload );
+	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.done );
+	UI_AddItem( &uiGameOptions.menu, (void *)&uiGameOptions.cancel );
 }
 
 /*

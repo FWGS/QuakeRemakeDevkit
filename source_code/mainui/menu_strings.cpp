@@ -18,7 +18,7 @@ GNU General Public License for more details.
 #include "utils.h"
 #include "menu_strings.h"
 
-char *MenuStrings[HINT_MAXSTRINGS] =
+const char *MenuStrings[HINT_MAXSTRINGS] =
 {
 "",
 "",
@@ -420,9 +420,9 @@ char *MenuStrings[HINT_MAXSTRINGS] =
 "",
 "",
 "",
-"Find more about our products",	// 400
+"Find more about Valve's product lineup",	// 400
 "",
-"http://cs-mapping.com.ua/forum/forumdisplay.php?f=189",
+"http://store.steampowered.com/app/70/",
 "",
 "",
 "",

@@ -178,7 +178,7 @@ static void UI_Controls_ParseKeysList( void )
 
 			sprintf( str, "^6%s^7", token );	// enable uiPromptTextColor
 			StringConcat( uiControls.keysDescription[i], str, strlen( str ) + 1 );
-			StringConcat( uiControls.keysDescription[i], uiEmptyString, 256 );	// empty
+			AddSpaces( uiControls.keysDescription[i], 256 );	// empty
 			uiControls.keysDescriptionPtr[i] = uiControls.keysDescription[i];
 			strcpy( uiControls.keysBind[i], "" );
 			strcpy( uiControls.firstKey[i], "" );
@@ -205,14 +205,14 @@ static void UI_Controls_ParseKeysList( void )
 			else strncpy( uiControls.secondKey[i], KEY_KeynumToString( keys[1] ), sizeof( uiControls.secondKey[i] ));
 
 			StringConcat( uiControls.keysDescription[i], str, CMD_LENGTH );
-			StringConcat( uiControls.keysDescription[i], uiEmptyString, CMD_LENGTH );
+			AddSpaces( uiControls.keysDescription[i], CMD_LENGTH );
 
 			// HACKHACK this color should be get from kb_keys.lst
 			if( !strnicmp( uiControls.firstKey[i], "MOUSE", 5 ))
 				sprintf( str, "^5%s^7", uiControls.firstKey[i] );	// cyan
 			else sprintf( str, "^3%s^7", uiControls.firstKey[i] );	// yellow
 			StringConcat( uiControls.keysDescription[i], str, KEY1_LENGTH );
-			StringConcat( uiControls.keysDescription[i], uiEmptyString, KEY1_LENGTH );
+			AddSpaces( uiControls.keysDescription[i], KEY1_LENGTH );
 
 			// HACKHACK this color should be get from kb_keys.lst
 			if( !strnicmp( uiControls.secondKey[i], "MOUSE", 5 ))
@@ -220,7 +220,7 @@ static void UI_Controls_ParseKeysList( void )
 			else sprintf( str, "^3%s^7", uiControls.secondKey[i] );	// yellow
 
 			StringConcat( uiControls.keysDescription[i], str, KEY2_LENGTH );
-			StringConcat( uiControls.keysDescription[i], uiEmptyString, KEY2_LENGTH );
+			AddSpaces( uiControls.keysDescription[i],KEY2_LENGTH );
 			uiControls.keysDescriptionPtr[i] = uiControls.keysDescription[i];
 			i++;
 		}
@@ -271,7 +271,6 @@ static void UI_Controls_ResetKeysList( void )
 	char *afile = (char *)LOAD_FILE( "gfx/shell/kb_def.lst", NULL );
 	char *pfile = afile;
 	char token[1024];
-	int i = 0;
 
 	if( !afile )
 	{
@@ -346,7 +345,7 @@ static const char *UI_Controls_KeyFunc( int key, int down )
 			return uiSoundLaunch;
 		}
 
-		if( key == K_ENTER && uiControls.dlgMessage.generic.flags & QMF_HIDDEN )
+		if( down && ( key == K_ENTER || key == K_AUX31 || key == K_AUX32 ) && uiControls.dlgMessage.generic.flags & QMF_HIDDEN ) // ENTER, A or SELECT
 		{
 			if( !strlen( uiControls.keysBind[uiControls.keysList.curItem] ))
 			{
@@ -366,7 +365,7 @@ static const char *UI_Controls_KeyFunc( int key, int down )
 			return uiSoundKey;
 		}
 
-		if(( key == K_BACKSPACE || key == K_DEL ) && uiControls.dlgMessage.generic.flags & QMF_HIDDEN )
+		if(( key == K_BACKSPACE || key == K_DEL || key == K_AUX30 ) && uiControls.dlgMessage.generic.flags & QMF_HIDDEN )
 		{
 			// delete bindings
 
@@ -443,18 +442,18 @@ static void UI_Controls_Init( void )
 	uiControls.menu.keyFunc = UI_Controls_KeyFunc;
 
 	StringConcat( uiControls.hintText, "Action", CMD_LENGTH );
-	StringConcat( uiControls.hintText, uiEmptyString, CMD_LENGTH-4 );
+	AddSpaces( uiControls.hintText, CMD_LENGTH-4 );
 	StringConcat( uiControls.hintText, "Key/Button", KEY1_LENGTH );
-	StringConcat( uiControls.hintText, uiEmptyString, KEY1_LENGTH-8 );
+	AddSpaces( uiControls.hintText, KEY1_LENGTH-8 );
 	StringConcat( uiControls.hintText, "Alternate", KEY2_LENGTH );
-	StringConcat( uiControls.hintText, uiEmptyString, KEY2_LENGTH );
+	AddSpaces( uiControls.hintText, KEY2_LENGTH );
 
 	uiControls.background.generic.id = ID_BACKGROUND;
 	uiControls.background.generic.type = QMTYPE_BITMAP;
 	uiControls.background.generic.flags = QMF_INACTIVE;
 	uiControls.background.generic.x = 0;
 	uiControls.background.generic.y = 0;
-	uiControls.background.generic.width = 1024;
+	uiControls.background.generic.width = uiStatic.width;
 	uiControls.background.generic.height = 768;
 	uiControls.background.pic = ART_BACKGROUND;
 
@@ -534,7 +533,7 @@ static void UI_Controls_Init( void )
 	uiControls.msgBox1.generic.type = QMTYPE_ACTION;
 	uiControls.msgBox1.generic.flags = QMF_INACTIVE|QMF_HIDDEN;
 	uiControls.msgBox1.generic.ownerdraw = UI_MsgBox_Ownerdraw; // just a fill rectangle
-	uiControls.msgBox1.generic.x = 192;
+	uiControls.msgBox1.generic.x = DLG_X + 192;
 	uiControls.msgBox1.generic.y = 256;
 	uiControls.msgBox1.generic.width = 640;
 	uiControls.msgBox1.generic.height = 128;
@@ -543,7 +542,7 @@ static void UI_Controls_Init( void )
 	uiControls.msgBox2.generic.type = QMTYPE_ACTION;
 	uiControls.msgBox2.generic.flags = QMF_INACTIVE|QMF_HIDDEN;
 	uiControls.msgBox2.generic.ownerdraw = UI_MsgBox_Ownerdraw; // just a fill rectangle
-	uiControls.msgBox2.generic.x = 192;
+	uiControls.msgBox2.generic.x = DLG_X + 192;
 	uiControls.msgBox2.generic.y = 256;
 	uiControls.msgBox2.generic.width = 640;
 	uiControls.msgBox2.generic.height = 256;
@@ -552,21 +551,21 @@ static void UI_Controls_Init( void )
 	uiControls.dlgMessage.generic.type = QMTYPE_ACTION;
 	uiControls.dlgMessage.generic.flags = QMF_INACTIVE|QMF_HIDDEN|QMF_DROPSHADOW;
 	uiControls.dlgMessage.generic.name = "Press a key or button";
-	uiControls.dlgMessage.generic.x = 320;
+	uiControls.dlgMessage.generic.x = DLG_X + 320;
 	uiControls.dlgMessage.generic.y = 280;
 
 	uiControls.promptMessage.generic.id = ID_PROMPT;
 	uiControls.promptMessage.generic.type = QMTYPE_ACTION;
 	uiControls.promptMessage.generic.flags = QMF_INACTIVE|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiControls.promptMessage.generic.name = "Reset buttons to default?";
-	uiControls.promptMessage.generic.x = 290;
+	uiControls.promptMessage.generic.x = DLG_X + 290;
 	uiControls.promptMessage.generic.y = 280;
 
 	uiControls.yes.generic.id = ID_YES;
 	uiControls.yes.generic.type = QMTYPE_BM_BUTTON;
 	uiControls.yes.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiControls.yes.generic.name = "Ok";
-	uiControls.yes.generic.x = 380;
+	uiControls.yes.generic.x = DLG_X + 380;
 	uiControls.yes.generic.y = 460;
 	uiControls.yes.generic.callback = UI_Controls_Callback;
 
@@ -576,7 +575,7 @@ static void UI_Controls_Init( void )
 	uiControls.no.generic.type = QMTYPE_BM_BUTTON;
 	uiControls.no.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiControls.no.generic.name = "Cancel";
-	uiControls.no.generic.x = 530;
+	uiControls.no.generic.x = DLG_X + 530;
 	uiControls.no.generic.y = 460;
 	uiControls.no.generic.callback = UI_Controls_Callback;
 
