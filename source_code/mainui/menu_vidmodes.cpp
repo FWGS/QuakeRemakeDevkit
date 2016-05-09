@@ -91,7 +91,9 @@ UI_VidModes_GetModesList
 */
 static void UI_VidModes_GetConfig( void )
 {
-	for( int i = 0; i < MAX_VIDMODES-1; i++ )
+	int i;
+
+	for( i = 0; i < MAX_VIDMODES-1; i++ )
 		uiVidModes.videoModesPtr[i] = uiVideoModes[i];
 	uiVidModes.videoModesPtr[i] = NULL;	// terminator
 
@@ -183,7 +185,7 @@ static void UI_VidModes_Init( void )
 	uiVidModes.background.generic.flags = QMF_INACTIVE;
 	uiVidModes.background.generic.x = 0;
 	uiVidModes.background.generic.y = 0;
-	uiVidModes.background.generic.width = 1024;
+	uiVidModes.background.generic.width = uiStatic.width;
 	uiVidModes.background.generic.height = 768;
 	uiVidModes.background.pic = ART_BACKGROUND;
 

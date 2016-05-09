@@ -146,9 +146,9 @@ static void UI_LoadGame_GetGameList( void )
 			{
 				// get name string even if not found - SV_GetComment can be mark saves
 				// as <CORRUPTED> <OLD VERSION> etc
-				StringConcat( uiLoadGame.saveDescription[i], uiEmptyString, TIME_LENGTH );
+				AddSpaces( uiLoadGame.saveDescription[i], TIME_LENGTH );
 				StringConcat( uiLoadGame.saveDescription[i], comment, NAME_LENGTH );
-				StringConcat( uiLoadGame.saveDescription[i], uiEmptyString, NAME_LENGTH );
+				AddSpaces( uiLoadGame.saveDescription[i], NAME_LENGTH );
 				uiLoadGame.saveDescriptionPtr[i] = uiLoadGame.saveDescription[i];
 				COM_FileBase( filenames[i], uiLoadGame.delName[i] );
 			}
@@ -164,11 +164,11 @@ static void UI_LoadGame_GetGameList( void )
 		StringConcat( uiLoadGame.saveDescription[i], comment + CS_SIZE, TIME_LENGTH );
 		StringConcat( uiLoadGame.saveDescription[i], " ", TIME_LENGTH );
 		StringConcat( uiLoadGame.saveDescription[i], comment + CS_SIZE + CS_TIME, TIME_LENGTH );
-		StringConcat( uiLoadGame.saveDescription[i], uiEmptyString, TIME_LENGTH ); // fill remaining entries
+		AddSpaces( uiLoadGame.saveDescription[i], TIME_LENGTH );// fill remaining entries
 		StringConcat( uiLoadGame.saveDescription[i], comment, NAME_LENGTH );
-		StringConcat( uiLoadGame.saveDescription[i], uiEmptyString, NAME_LENGTH );
+		AddSpaces( uiLoadGame.saveDescription[i], NAME_LENGTH );
 		StringConcat( uiLoadGame.saveDescription[i], comment + CS_SIZE + (CS_TIME * 2), GAMETIME_LENGTH );
-		StringConcat( uiLoadGame.saveDescription[i], uiEmptyString, GAMETIME_LENGTH );
+		AddSpaces( uiLoadGame.saveDescription[i], GAMETIME_LENGTH );
 		uiLoadGame.saveDescriptionPtr[i] = uiLoadGame.saveDescription[i];
 	}
 
@@ -277,7 +277,6 @@ static void UI_LoadGame_Ownerdraw( void *self )
 			char	saveshot[128];
 
 			sprintf( saveshot, "save/%s.bmp", uiLoadGame.saveName[uiLoadGame.savesList.curItem] );
-
 			if( !FILE_EXISTS( saveshot ))
 				UI_DrawPicAdditive( x, y, w, h, uiColorWhite, "{GRAF001" );
 			else UI_DrawPic( x, y, w, h, uiColorWhite, saveshot );
@@ -302,18 +301,18 @@ static void UI_LoadGame_Init( void )
 	uiLoadGame.menu.keyFunc = UI_LoadGame_KeyFunc;
 
 	StringConcat( uiLoadGame.hintText, "Time", TIME_LENGTH );
-	StringConcat( uiLoadGame.hintText, uiEmptyString, TIME_LENGTH );
+	AddSpaces( uiLoadGame.hintText, TIME_LENGTH );
 	StringConcat( uiLoadGame.hintText, "Game", NAME_LENGTH );
-	StringConcat( uiLoadGame.hintText, uiEmptyString, NAME_LENGTH );
+	AddSpaces( uiLoadGame.hintText, NAME_LENGTH );
 	StringConcat( uiLoadGame.hintText, "Elapsed time", GAMETIME_LENGTH );
-	StringConcat( uiLoadGame.hintText, uiEmptyString, GAMETIME_LENGTH );
+	AddSpaces( uiLoadGame.hintText, GAMETIME_LENGTH );
 
 	uiLoadGame.background.generic.id = ID_BACKGROUND;
 	uiLoadGame.background.generic.type = QMTYPE_BITMAP;
 	uiLoadGame.background.generic.flags = QMF_INACTIVE;
 	uiLoadGame.background.generic.x = 0;
 	uiLoadGame.background.generic.y = 0;
-	uiLoadGame.background.generic.width = 1024;
+	uiLoadGame.background.generic.width = uiStatic.width;
 	uiLoadGame.background.generic.height = 768;
 	uiLoadGame.background.pic = ART_BACKGROUND;
 
@@ -389,7 +388,7 @@ static void UI_LoadGame_Init( void )
 	uiLoadGame.msgBox.generic.type = QMTYPE_ACTION;
 	uiLoadGame.msgBox.generic.flags = QMF_INACTIVE|QMF_HIDDEN;
 	uiLoadGame.msgBox.generic.ownerdraw = UI_MsgBox_Ownerdraw; // just a fill rectangle
-	uiLoadGame.msgBox.generic.x = 192;
+	uiLoadGame.msgBox.generic.x = DLG_X + 192;
 	uiLoadGame.msgBox.generic.y = 256;
 	uiLoadGame.msgBox.generic.width = 640;
 	uiLoadGame.msgBox.generic.height = 256;
@@ -398,14 +397,14 @@ static void UI_LoadGame_Init( void )
 	uiLoadGame.promptMessage.generic.type = QMTYPE_ACTION;
 	uiLoadGame.promptMessage.generic.flags = QMF_INACTIVE|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiLoadGame.promptMessage.generic.name = "Delete selected game?";
-	uiLoadGame.promptMessage.generic.x = 315;
+	uiLoadGame.promptMessage.generic.x = DLG_X + 315;
 	uiLoadGame.promptMessage.generic.y = 280;
 
 	uiLoadGame.yes.generic.id = ID_YES;
 	uiLoadGame.yes.generic.type = QMTYPE_BM_BUTTON;
 	uiLoadGame.yes.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiLoadGame.yes.generic.name = "Ok";
-	uiLoadGame.yes.generic.x = 380;
+	uiLoadGame.yes.generic.x = DLG_X + 380;
 	uiLoadGame.yes.generic.y = 460;
 	uiLoadGame.yes.generic.callback = UI_LoadGame_Callback;
 
@@ -415,7 +414,7 @@ static void UI_LoadGame_Init( void )
 	uiLoadGame.no.generic.type = QMTYPE_BM_BUTTON;
 	uiLoadGame.no.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiLoadGame.no.generic.name = "Cancel";
-	uiLoadGame.no.generic.x = 530;
+	uiLoadGame.no.generic.x = DLG_X + 530;
 	uiLoadGame.no.generic.y = 460;
 	uiLoadGame.no.generic.callback = UI_LoadGame_Callback;
 

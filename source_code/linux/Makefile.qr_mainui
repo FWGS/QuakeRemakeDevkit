@@ -29,6 +29,7 @@ MAINUI_OBJS = \
         ${MAINUI_OBJ_DIR}/menu_creategame.o \
         ${MAINUI_OBJ_DIR}/menu_credits.o \
         ${MAINUI_OBJ_DIR}/menu_customgame.o \
+        ${MAINUI_OBJ_DIR}/menu_filedialog.o \
         ${MAINUI_OBJ_DIR}/menu_gameoptions.o \
         ${MAINUI_OBJ_DIR}/menu_internetgames.o \
         ${MAINUI_OBJ_DIR}/menu_langame.o \
@@ -39,12 +40,16 @@ MAINUI_OBJS = \
         ${MAINUI_OBJ_DIR}/menu_savegame.o \
         ${MAINUI_OBJ_DIR}/menu_saveload.o \
         ${MAINUI_OBJ_DIR}/menu_strings.o \
+        ${MAINUI_OBJ_DIR}/menu_touch.o \
+        ${MAINUI_OBJ_DIR}/menu_touchbuttons.o \
+        ${MAINUI_OBJ_DIR}/menu_touchedit.o \
+        ${MAINUI_OBJ_DIR}/menu_touchoptions.o \
         ${MAINUI_OBJ_DIR}/menu_video.o \
         ${MAINUI_OBJ_DIR}/menu_vidmodes.o \
         ${MAINUI_OBJ_DIR}/menu_vidoptions.o \
         ${MAINUI_OBJ_DIR}/udll_int.o \
         ${MAINUI_OBJ_DIR}/ui_title_anim.o \
-        ${MAINUI_OBJ_DIR}/utils.o \
+        ${MAINUI_OBJ_DIR}/utils.o
 
 all: libxashmenu.$(SHLIBEXT)
 

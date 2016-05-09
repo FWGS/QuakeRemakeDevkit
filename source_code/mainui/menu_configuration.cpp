@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define ID_DONE	     	6
 #define ID_MSGBOX	 	7
 #define ID_MSGTEXT	 	8
+#define ID_TOUCH	     	9
 #define ID_YES	 	130
 #define ID_NO	 	131
 
@@ -49,6 +50,7 @@ typedef struct
 	menuPicButton_s	controls;
 	menuPicButton_s	audio;
 	menuPicButton_s	video;
+	menuPicButton_s	touch;
 	menuPicButton_s	update;
 	menuPicButton_s	done;
 
@@ -80,6 +82,7 @@ static void UI_CheckUpdatesDialog( void )
 	uiOptions.controls.generic.flags ^= QMF_INACTIVE; 
 	uiOptions.audio.generic.flags ^= QMF_INACTIVE;
 	uiOptions.video.generic.flags ^= QMF_INACTIVE;
+	uiOptions.touch.generic.flags ^= QMF_INACTIVE;
 	uiOptions.update.generic.flags ^= QMF_INACTIVE;
 	uiOptions.done.generic.flags ^= QMF_INACTIVE;
 
@@ -131,6 +134,9 @@ static void UI_Options_Callback( void *self, int event )
 	case ID_VIDEO:
 		UI_Video_Menu();
 		break;
+	case ID_TOUCH:
+		UI_Touch_Menu();
+		break;
 	case ID_UPDATE:
 		UI_CheckUpdatesDialog();
 		break;
@@ -160,7 +166,7 @@ static void UI_Options_Init( void )
 	uiOptions.background.generic.flags = QMF_INACTIVE;
 	uiOptions.background.generic.x = 0;
 	uiOptions.background.generic.y = 0;
-	uiOptions.background.generic.width = 1024;
+	uiOptions.background.generic.width = uiStatic.width;
 	uiOptions.background.generic.height = 768;
 	uiOptions.background.pic = ART_BACKGROUND;
 
@@ -206,11 +212,23 @@ static void UI_Options_Init( void )
 
 	UI_UtilSetupPicButton( &uiOptions.video, PC_VIDEO );
 
+	uiOptions.touch.generic.id = ID_TOUCH;
+	uiOptions.touch.generic.type = QMTYPE_BM_BUTTON;
+	uiOptions.touch.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_NOTIFY | QMF_ACT_ONRELEASE;
+	uiOptions.touch.generic.x = 72;
+	uiOptions.touch.generic.y = 380;
+	uiOptions.touch.generic.name = "Touch";
+	uiOptions.touch.generic.statusText = "Change touch settings and buttons";
+	uiOptions.touch.generic.callback = UI_Options_Callback;
+	uiOptions.touch.pic = PIC_Load("gfx/shell/btn_touch");
+
+	//UI_UtilSetupPicButton( &uiOptions.video, PC_TOUCH );
+
 	uiOptions.update.generic.id = ID_UPDATE;
 	uiOptions.update.generic.type = QMTYPE_BM_BUTTON;
 	uiOptions.update.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_NOTIFY;
 	uiOptions.update.generic.x = 72;
-	uiOptions.update.generic.y = 380;
+	uiOptions.update.generic.y = 430;
 	uiOptions.update.generic.name = "Update";
 	uiOptions.update.generic.statusText = "Donwload the latest version of the Xash3D engine";
 	uiOptions.update.generic.callback = UI_Options_Callback;
@@ -223,7 +241,7 @@ static void UI_Options_Init( void )
 	uiOptions.done.generic.type = QMTYPE_BM_BUTTON;
 	uiOptions.done.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_NOTIFY;
 	uiOptions.done.generic.x = 72;
-	uiOptions.done.generic.y = 430;
+	uiOptions.done.generic.y = 480;
 	uiOptions.done.generic.name = "Done";
 	uiOptions.done.generic.statusText = "Go back to the Main Menu";
 	uiOptions.done.generic.callback = UI_Options_Callback;
@@ -234,7 +252,7 @@ static void UI_Options_Init( void )
 	uiOptions.msgBox.generic.type = QMTYPE_ACTION;
 	uiOptions.msgBox.generic.flags = QMF_INACTIVE|QMF_HIDDEN;
 	uiOptions.msgBox.generic.ownerdraw = UI_MsgBox_Ownerdraw; // just a fill rectangle
-	uiOptions.msgBox.generic.x = 192;
+	uiOptions.msgBox.generic.x = DLG_X + 192;
 	uiOptions.msgBox.generic.y = 256;
 	uiOptions.msgBox.generic.width = 640;
 	uiOptions.msgBox.generic.height = 256;
@@ -243,14 +261,14 @@ static void UI_Options_Init( void )
 	uiOptions.updatePrompt.generic.type = QMTYPE_ACTION;
 	uiOptions.updatePrompt.generic.flags = QMF_INACTIVE|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiOptions.updatePrompt.generic.name = "Check the Internet for updates?";
-	uiOptions.updatePrompt.generic.x = 248;
+	uiOptions.updatePrompt.generic.x = DLG_X + 248;
 	uiOptions.updatePrompt.generic.y = 280;
 
 	uiOptions.yes.generic.id = ID_YES;
 	uiOptions.yes.generic.type = QMTYPE_BM_BUTTON;
 	uiOptions.yes.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiOptions.yes.generic.name = "Ok";
-	uiOptions.yes.generic.x = 380;
+	uiOptions.yes.generic.x = DLG_X + 380;
 	uiOptions.yes.generic.y = 460;
 	uiOptions.yes.generic.callback = UI_Options_Callback;
 
@@ -260,7 +278,7 @@ static void UI_Options_Init( void )
 	uiOptions.no.generic.type = QMTYPE_BM_BUTTON;
 	uiOptions.no.generic.flags = QMF_HIGHLIGHTIFFOCUS|QMF_DROPSHADOW|QMF_HIDDEN;
 	uiOptions.no.generic.name = "Cancel";
-	uiOptions.no.generic.x = 530;
+	uiOptions.no.generic.x = DLG_X + 530;
 	uiOptions.no.generic.y = 460;
 	uiOptions.no.generic.callback = UI_Options_Callback;
 
@@ -272,6 +290,7 @@ static void UI_Options_Init( void )
 	UI_AddItem( &uiOptions.menu, (void *)&uiOptions.controls );
 	UI_AddItem( &uiOptions.menu, (void *)&uiOptions.audio );
 	UI_AddItem( &uiOptions.menu, (void *)&uiOptions.video );
+	UI_AddItem( &uiOptions.menu, (void *)&uiOptions.touch );
 	UI_AddItem( &uiOptions.menu, (void *)&uiOptions.update );
 	UI_AddItem( &uiOptions.menu, (void *)&uiOptions.msgBox );
 	UI_AddItem( &uiOptions.menu, (void *)&uiOptions.updatePrompt );
