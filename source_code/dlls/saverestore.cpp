@@ -603,6 +603,8 @@ int CSave :: WriteFields( const char *pname, void *pBaseData, TYPEDESCRIPTION *p
 					case FIELD_EHANDLE:
 						entityArray[j] = EntityIndex( (CBaseEntity *)(((EHANDLE *)pOutputData)[j]) );
 					break;
+					default:
+					break;
 				}
 			}
 			WriteInt( pTest->fieldName, entityArray, pTest->fieldSize );
@@ -637,6 +639,7 @@ int CSave :: WriteFields( const char *pname, void *pBaseData, TYPEDESCRIPTION *p
 		break;
 		default:
 			ALERT( at_error, "Bad field type\n" );
+		break;
 		}
 	}
 
@@ -855,6 +858,7 @@ int CRestore::ReadField( void *pBaseData, TYPEDESCRIPTION *pFields, int fieldCou
 
 					default:
 						ALERT( at_error, "Bad field type\n" );
+					break;
 					}
 				}
 			}
