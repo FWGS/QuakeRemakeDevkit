@@ -17,11 +17,11 @@
 #include	"util.h"
 #include	"cbase.h"
 #include	"monster.h"
-#include  "animation.h"
+#include	"animation.h"
 #include	"weapons.h"
 #include	"skill.h"
 #include	"player.h"
-#include  "gamerules.h"
+#include	"gamerules.h"
 
 extern int gmsgTempEntity;
 
@@ -135,7 +135,7 @@ void CChthon :: AI_Idle( void )
 void CChthon :: AI_Face( void )
 {
 	// go for another player if multi player
-	if( m_hEnemy != NULL && m_hEnemy->pev->health <= 0.0f || RANDOM_FLOAT( 0, 1.0f ) < 0.02f )
+	if( ( m_hEnemy != NULL && m_hEnemy->pev->health <= 0.0f) || RANDOM_FLOAT( 0, 1.0f ) < 0.02f )
 	{
 		m_hEnemy = UTIL_FindEntityByClassname( m_hEnemy, "player" );
 		if( m_hEnemy == NULL )
